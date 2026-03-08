@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Prova de Informática Básica</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f4f7fb;
+            font-family: Segoe UI;
+        }
+
+        /* CABEÇALHO */
+
+        .topo {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            color: white;
+            padding: 45px 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .topo h1 {
+            font-weight: 600;
+        }
+
+        .info-certificado {
+            background: rgba(255, 255, 255, 0.15);
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        /* QUIZ */
+
+        .quiz-box {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .pergunta-card {
+            border: none;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: 0.2s;
+        }
+
+        .pergunta {
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .form-check {
+            background: #f8fafc;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        .form-check:hover {
+            background: #e2e8f0;
+        }
+
+        .progress {
+            height: 12px;
+            border-radius: 10px;
+        }
+
+        .btn-finalizar {
+            font-size: 18px;
+            padding: 12px 35px;
+        }
+
+        #resultado {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .resultado-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="topo">
+
+        <h1>Prova de Informática</h1>
+
+        <p>Responda 25 questões e obtenha pelo menos 60% de acerto.</p>
+
+        <div class="info-certificado">
+            🎓 Certificado de Informática • 200 Horas • R$ 19,90
+        </div>
+
+    </div>
+
+    <div class="container">
+
+        <div class="quiz-box">
+
+            <div class="progress mb-4">
+
+                <div id="barra" class="progress-bar bg-success" style="width:0%"></div>
+
+            </div>
+
+            <form id="quizForm"></form>
+
+            <div class="text-center mt-4">
+
+                <button type="button" class="btn btn-primary btn-finalizar" onclick="corrigir()">
+                    Finalizar Prova
+                </button>
+
+            </div>
+
+            <div id="resultado"></div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        const perguntas = [
+
+            { q: "1. Qual componente do computador é responsável por executar instruções e processar dados?", op: ["HD", "CPU", "Memória RAM", "Placa-mãe"], r: 1 },
+
+            { q: "2. A memória RAM tem como principal função:", op: ["Armazenar dados permanentemente", "Executar programas temporariamente", "Conectar à internet", "Controlar a placa de vídeo"], r: 1 },
+
+            { q: "3. Qual dispositivo é responsável por armazenar dados permanentemente no computador?", op: ["HD ou SSD", "Memória RAM", "Processador", "Teclado"], r: 0 },
+
+            { q: "4. Qual das opções representa corretamente um endereço de site?", op: ["www.google.com", "google@site", "google.exe", "www@google"], r: 0 },
+
+            { q: "5. O que significa fazer backup?", op: ["Apagar arquivos", "Fazer cópia de segurança dos dados", "Enviar arquivos", "Compactar arquivos"], r: 1 },
+
+            { q: "6. Qual atalho é usado para salvar um documento?", op: ["Ctrl + C", "Ctrl + V", "Ctrl + S", "Ctrl + X"], r: 2 },
+
+            { q: "7. Qual desses programas é utilizado para criar planilhas?", op: ["Word", "Excel", "PowerPoint", "Paint"], r: 1 },
+
+            { q: "8. O que é um navegador de internet?", op: ["Dispositivo de rede", "Programa que acessa sites", "Sistema operacional", "Tipo de vírus"], r: 1 },
+
+            { q: "9. Qual dessas opções é um exemplo de sistema operacional?", op: ["Google", "Windows", "Chrome", "Intel"], r: 1 },
+
+            { q: "10. O que significa URL?", op: ["Endereço de um recurso na internet", "Tipo de navegador", "Programa de segurança", "Tipo de arquivo"], r: 0 },
+
+            { q: "11. Qual extensão representa um arquivo de imagem?", op: [".png", ".doc", ".xls", ".ppt"], r: 0 },
+
+            { q: "12. Qual extensão representa um documento de texto do Word?", op: [".docx", ".jpg", ".mp3", ".png"], r: 0 },
+
+            { q: "13. Qual desses serviços permite armazenar arquivos na nuvem?", op: ["Google Drive", "Paint", "WordPad", "Bloco de Notas"], r: 0 },
+
+            { q: "14. O que é phishing?", op: ["Golpe para roubar informações na internet", "Programa de edição", "Sistema operacional", "Dispositivo de rede"], r: 0 },
+
+            { q: "15. Qual dessas práticas aumenta a segurança digital?", op: ["Usar senha forte", "Compartilhar senha", "Desativar antivírus", "Abrir qualquer link"], r: 0 },
+
+            { q: "16. O que significa download?", op: ["Enviar arquivo", "Baixar arquivo da internet", "Apagar arquivo", "Compartilhar arquivo"], r: 1 },
+
+            { q: "17. O que significa upload?", op: ["Enviar arquivo para internet", "Baixar arquivo", "Excluir arquivo", "Salvar arquivo"], r: 0 },
+
+            { q: "18. Qual dispositivo transforma documentos físicos em arquivos digitais?", op: ["Scanner", "Impressora", "Monitor", "Webcam"], r: 0 },
+
+            { q: "19. Qual programa é usado para criar apresentações de slides?", op: ["Excel", "PowerPoint", "Word", "Access"], r: 1 },
+
+            { q: "20. Qual dessas opções é um mecanismo de busca?", op: ["Google", "Windows", "Excel", "PowerPoint"], r: 0 },
+
+            { q: "21. O que é um vírus de computador?", op: ["Programa malicioso", "Tipo de hardware", "Extensão de arquivo", "Programa de texto"], r: 0 },
+
+            { q: "22. O que é Wi-Fi?", op: ["Tecnologia de conexão sem fio à internet", "Tipo de cabo", "Sistema operacional", "Programa de edição"], r: 0 },
+
+            { q: "23. O que significa login?", op: ["Entrar em um sistema com usuário e senha", "Criar documento", "Salvar arquivo", "Desligar computador"], r: 0 },
+
+            { q: "24. Qual dessas opções é considerada hardware?", op: ["Teclado", "Windows", "Google Chrome", "Excel"], r: 0 },
+
+            { q: "25. O que é um hyperlink?", op: ["Link que leva para outra página ou arquivo", "Tipo de vírus", "Extensão de imagem", "Programa de texto"], r: 0 }
+
+        ];
+
+        const form = document.getElementById("quizForm");
+        const barra = document.getElementById("barra");
+
+        perguntas.forEach((p, i) => {
+
+            let html = `<div class="pergunta-card"><div class="pergunta">${p.q}</div>`;
+
+            p.op.forEach((op, j) => {
+
+                html += `
+
+<div class="form-check">
+
+<input class="form-check-input" type="radio" name="q${i}" value="${j}" onchange="progresso()">
+
+<label class="form-check-label">${op}</label>
+
+</div>
+
+`;
+
+            });
+
+            html += `</div>`;
+
+            form.innerHTML += html;
+
+        });
+
+        function progresso() {
+
+            let respondidas = document.querySelectorAll("input[type=radio]:checked").length;
+
+            let porcentagem = (respondidas / perguntas.length) * 100;
+
+            barra.style.width = porcentagem + "%";
+
+        }
+
+        function corrigir() {
+
+            let acertos = 0;
+
+            perguntas.forEach((p, i) => {
+
+                let resposta = document.querySelector(`input[name=q${i}]:checked`);
+
+                if (resposta && parseInt(resposta.value) === p.r) {
+                    acertos++;
+                }
+
+            });
+
+            let porcentagem = (acertos / perguntas.length) * 100;
+
+            let resultado = document.getElementById("resultado");
+
+            resultado.style.display = "block";
+
+            if (porcentagem >= 60) {
+
+                resultado.innerHTML = `
+
+<div class="card resultado-card p-4 text-center">
+
+<h2 class="text-success">🎉 Parabéns!</h2>
+
+<p class="lead">Você acertou <b>${acertos}</b> de 25 questões.</p>
+
+<p>Você está apto a solicitar seu <b>Certificado de Informática - 200 Horas</b>.</p>
+
+<a href="https://wa.me/5598989088564?text=Olá,%20passei%20na%20prova%20de%20informática%20e%20quero%20solicitar%20meu%20certificado%20de%20200h"
+class="btn btn-success btn-lg mt-3">
+
+Solicitar Certificado (R$19,90)
+
+</a>
+
+</div>
+
+`;
+
+            } else {
+
+                resultado.innerHTML = `
+
+<div class="card resultado-card p-4 text-center">
+
+<h2 class="text-danger">Resultado</h2>
+
+<p class="lead">Você acertou <b>${acertos}</b> de 25 questões.</p>
+
+<p>É necessário acertar pelo menos <b>60%</b> para solicitar o certificado.</p>
+
+</div>
+
+`;
+
+            }
+
+            window.scrollTo(0, document.body.scrollHeight);
+
+        }
+
+    </script>
+
+</body>
+
+</html>|
